@@ -1,0 +1,8 @@
+{
+    "consumer-key": "",
+    "consumer-secret": "",
+    "access-token": "",
+    "access-token-secret": "",
+    "num-tweets-to-fetch": 200,
+    "screen-name": "_bobwilliams"
+}
