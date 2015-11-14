@@ -1,4 +1,4 @@
-(defproject twitter_analytics "0.1.0-SNAPSHOT"
+(defproject twitter-analytics "0.1.0-SNAPSHOT"
   :description "Twitter stats and NLP"
   :url "http://bob.codes"
   :main twitter_analytics.core

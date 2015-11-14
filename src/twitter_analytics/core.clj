@@ -1,8 +1,8 @@
 (ns twitter_analytics.core
+  (:gen-class)
   (:require [twitter_analytics.models :as models]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.pprint :as pprint]
             [cheshire.core :as json]
             [twitter.oauth :as oauth]
             [twitter.api.restful :as rest-api]))
@@ -32,7 +32,7 @@
     (let [new-tweets (tweets-since creds user num-tweets last-id)
           oldest-id (find-oldest-id new-tweets)
           tweets-so-far (concat tweets new-tweets)]
-      (if (< (count new-tweets) 200)
+      (if (< (count new-tweets) num-tweets)
         tweets-so-far
         (recur tweets-so-far (dec oldest-id))))))
 
@@ -42,22 +42,19 @@
        (map (fn [[x y]] y))
        (map str/lower-case)))
 
-(defn sentencize [sentence] 
-  (str sentence "."))
-
 (defn get-data [creds screen-name num-tweets]
   (->> (retrieve-tweet-feed creds screen-name num-tweets)
-       (map :text)
-       (map sentencize)))
+       (map :text)))
 
 (defn process-data [data]
-  (->> data
-    (flatten)
-    (group-by identity)
-    (map (fn [[k v]] [k (count v)]))
-    (sort-by (fn [[k v]] v))
-    (reverse)
-    (take 10)))
+  (let [cap (conf :stats-cap)]
+    (->> data
+      (flatten)
+      (group-by identity)
+      (map (fn [[k v]] [k (count v)]))
+      (sort-by (fn [[k v]] v))
+      (reverse)
+      (take cap))))
 
 (defn -main [& args]
   (let [creds (make-creds conf)

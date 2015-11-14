@@ -4,5 +4,6 @@
     "access-token": "",
     "access-token-secret": "",
     "num-tweets-to-fetch": 200,
+    "stats-cap": 10,
     "screen-name": "_bobwilliams"
 }
