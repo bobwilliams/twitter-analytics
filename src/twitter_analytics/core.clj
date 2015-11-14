@@ -1,8 +1,8 @@
 (ns twitter_analytics.core
   (:gen-class)
   (:require [twitter_analytics.models :as models]
+            [twitter_analytics.util :as util]
             [clojure.java.io :as io]
-            [clojure.string :as str]
             [cheshire.core :as json]
             [twitter.oauth :as oauth]
             [twitter.api.restful :as rest-api]))
@@ -36,12 +36,6 @@
         tweets-so-far
         (recur tweets-so-far (dec oldest-id))))))
 
-(defn extract-users [text]
-  (->> text
-       (re-seq #"@(\w+)")
-       (map (fn [[x y]] y))
-       (map str/lower-case)))
-
 (defn get-data [creds screen-name num-tweets]
   (->> (retrieve-tweet-feed creds screen-name num-tweets)
        (map :text)))
@@ -51,10 +45,11 @@
     (->> data
       (flatten)
       (group-by identity)
-      (map (fn [[k v]] [k (count v)]))
+      (map (fn [[k v]] [(util/key-it k) (count v)]))
       (sort-by (fn [[k v]] v))
       (reverse)
-      (take cap))))
+      (take cap)
+      (into {}))))
 
 (defn -main [& args]
   (let [creds (make-creds conf)
@@ -62,10 +57,10 @@
         screen-name (conf :screen-name)
         data (get-data creds screen-name num-tweets)
         tokens (map models/tokenize data)
-        twitter-handles   {:Handles (process-data (map extract-users data))} 
-        ner-person        {:Names (process-data (map models/entity-person-find tokens))}
-        ner-locations     {:Locations (process-data (map models/entity-location-find tokens))}
-        ner-organizations {:Organizations (process-data (map models/entity-organization-find tokens))}
-        ner-time          {:Times (process-data (map models/entity-time-find tokens))}]
+        twitter-handles   {:handles (process-data (map util/extract-users data))} 
+        ner-person        {:names (process-data (map models/entity-person-find tokens))}
+        ner-locations     {:locations (process-data (map models/entity-location-find tokens))}
+        ner-organizations {:organizations (process-data (map models/entity-organization-find tokens))}
+        ner-time          {:times (process-data (map models/entity-time-find tokens))}]
         
         [twitter-handles ner-person ner-locations ner-organizations ner-time]))
