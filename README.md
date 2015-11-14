@@ -16,7 +16,7 @@ A Clojure app for generating stats and NLP analytics from Twitter.
 You will need to [create a new app](https://apps.twitter.com/) for Twitter.
 Once done, head over to your Keys and Access Tokens page to grab most of the below.
 
-```json
+```sh
 {
     "consumer-key": "",           // your twitter consumer key (api key)
     "consumer-secret": "",        // your twitter consumer secrect key (api secret)
