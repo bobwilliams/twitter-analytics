@@ -7,10 +7,8 @@ A Clojure app for generating stats and NLP from Twitter
 * [Twitter API](https://github.com/adamwynne/twitter-api)
 * [Clojure OpenNLP](https://github.com/dakrone/clojure-opennlp)
 * [Cheshire](https://github.com/dakrone/cheshire)
-
-## Prerequisites
-
 * [Leiningen](http://leiningen.org/)
+* [OpenNLP Models](http://opennlp.sourceforge.net/models-1.5)
 
 ## Usage
 
